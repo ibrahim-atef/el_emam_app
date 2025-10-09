@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "198002771083",
+    "firebase_url": "https://shipped-963da-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "shipped-963da",
+    "storage_bucket": "shipped-963da.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:198002771083:android:e15a5d747094916372008e",
+        "android_client_info": {
+          "package_name": "com.anmka.elemam"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "198002771083-pvdms5oemnfiv82o5r7rjk17612sqicj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCl3pCtfQJsL07RmyVP7xxuyxDBNHdxZhw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "198002771083-pvdms5oemnfiv82o5r7rjk17612sqicj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

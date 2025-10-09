@@ -1,0 +1,267 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:screen_protector/screen_protector.dart';
+
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const ElEmamApp());
+}
+
+class ElEmamApp extends StatelessWidget {
+  const ElEmamApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'El-Emam - Law Studies',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        useMaterial3: true,
+        fontFamily: 'Roboto',
+      ),
+      home: const WebViewScreen(),
+    );
+  }
+}
+
+class WebViewScreen extends StatefulWidget {
+  const WebViewScreen({super.key});
+
+  @override
+  State<WebViewScreen> createState() => _WebViewScreenState();
+}
+
+class _WebViewScreenState extends State<WebViewScreen> {
+  InAppWebViewController? _webViewController;
+  double _loadingProgress = 0.0;
+  bool _isLoading = true;
+  String? _errorMessage;
+  bool _hasLoadedSuccessfully = false;
+  final String _initialUrl = 'https://el-emam.anmka.com';
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeScreenProtector();
+  }
+
+  /// Initialize screen protection on Android/iOS
+  Future<void> _initializeScreenProtector() async {
+    try {
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        debugPrint('🛡️ Enabling Android screen protection...');
+        await ScreenProtector.protectDataLeakageOn();
+      } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+        debugPrint('🛡️ Enabling iOS screenshot prevention...');
+        await ScreenProtector.preventScreenshotOn();
+      }
+    } catch (e) {
+      debugPrint('❌ ScreenProtector init error: $e');
+    }
+  }
+
+  void _refreshWebView() {
+    debugPrint('🔄 Refreshing WebView...');
+    if (mounted) {
+      setState(() {
+        _loadingProgress = 0.0;
+        _isLoading = true;
+        _errorMessage = null;
+        _hasLoadedSuccessfully = false;
+      });
+    }
+    _webViewController?.reload();
+  }
+
+  @override
+  void dispose() {
+    // Disable screen protection when leaving
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      ScreenProtector.protectDataLeakageOff();
+    } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+      ScreenProtector.preventScreenshotOff();
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: RefreshIndicator(
+          onRefresh: () async {
+            _refreshWebView();
+          },
+          child: Stack(
+            children: [
+              InAppWebView(
+                initialUrlRequest: URLRequest(
+                  url: WebUri(_initialUrl),
+                ),
+                initialSettings: InAppWebViewSettings(
+                  javaScriptEnabled: true,
+                  javaScriptCanOpenWindowsAutomatically: true,
+                  mediaPlaybackRequiresUserGesture: false,
+                  allowsInlineMediaPlayback: true,
+                  mixedContentMode: MixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
+                  useHybridComposition: true,
+                  useShouldOverrideUrlLoading: true,
+                  allowFileAccessFromFileURLs: true,
+                  allowUniversalAccessFromFileURLs: true,
+                  domStorageEnabled: true,
+                  databaseEnabled: true,
+                  cacheEnabled: true,
+                  clearCache: false,
+                  supportZoom: true,
+                  builtInZoomControls: true,
+                  displayZoomControls: false,
+                  userAgent: 'Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
+                  // Prevent popups and dialogs
+                  supportMultipleWindows: false,
+                  disableContextMenu: true,
+                ),
+                onWebViewCreated: (controller) {
+                  _webViewController = controller;
+                  debugPrint('🔧 WebView created');
+                },
+                onLoadStart: (controller, url) {
+                  debugPrint('🚀 Page started loading: $url');
+                  if (mounted) {
+                    setState(() {
+                      _loadingProgress = 0.0;
+                      _isLoading = true;
+                      _errorMessage = null;
+                    });
+                  }
+                },
+                onLoadStop: (controller, url) async {
+                  debugPrint('✅ Page finished loading: $url');
+                  if (mounted) {
+                    setState(() {
+                      _loadingProgress = 1.0;
+                      _isLoading = false;
+                      _hasLoadedSuccessfully = true;
+                      _errorMessage = null;
+                    });
+                  }
+                },
+                onProgressChanged: (controller, progress) {
+                  debugPrint('📊 Loading progress: $progress%');
+                  if (mounted) {
+                    setState(() {
+                      _loadingProgress = progress / 100;
+                    });
+                  }
+                },
+                onReceivedError: (controller, request, error) {
+                  debugPrint('❌ WebView Error: ${error.description}');
+                  if (!_hasLoadedSuccessfully) {
+                    if (mounted) {
+                      setState(() {
+                        _errorMessage = 'خطأ في تحميل الصفحة: ${error.description}';
+                        _isLoading = false;
+                      });
+                    }
+                  }
+                },
+                onPermissionRequest: (controller, request) async {
+                  debugPrint('🎥 Permission requested: ${request.resources}');
+                  // Automatically grant all permissions without showing popup
+                  return PermissionResponse(
+                    resources: request.resources,
+                    action: PermissionResponseAction.GRANT,
+                  );
+                },
+                onJsAlert: (controller, jsAlertRequest) async {
+                  // Block JavaScript alerts
+                  return JsAlertResponse(
+                    handledByClient: true,
+                  );
+                },
+                onJsConfirm: (controller, jsConfirmRequest) async {
+                  // Block JavaScript confirms
+                  return JsConfirmResponse(
+                    handledByClient: true,
+                    action: JsConfirmResponseAction.CONFIRM,
+                  );
+                },
+                onJsPrompt: (controller, jsPromptRequest) async {
+                  // Block JavaScript prompts
+                  return JsPromptResponse(
+                    handledByClient: true,
+                    action: JsPromptResponseAction.CONFIRM,
+                  );
+                },
+                shouldOverrideUrlLoading: (controller, navigationAction) async {
+                  debugPrint('🧭 Navigation request: ${navigationAction.request.url}');
+                  return NavigationActionPolicy.ALLOW;
+                },
+                onConsoleMessage: (controller, consoleMessage) {
+                  debugPrint('📝 Console: ${consoleMessage.message}');
+                },
+              ),
+
+              if (_isLoading && _loadingProgress < 1.0)
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: LinearProgressIndicator(
+                    value: _loadingProgress,
+                    backgroundColor: Colors.grey[200],
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(Colors.blue[700]!),
+                    minHeight: 3,
+                  ),
+                ),
+
+              if (_errorMessage != null && !_hasLoadedSuccessfully)
+                Center(
+                  child: Container(
+                    margin: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.red[50],
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.red[200]!),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.error_outline,
+                          color: Colors.red[600],
+                          size: 48,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          _errorMessage!,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.red[700],
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton.icon(
+                          onPressed: _refreshWebView,
+                          icon: const Icon(Icons.refresh),
+                          label: const Text('إعادة المحاولة'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red[600],
+                            foregroundColor: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
