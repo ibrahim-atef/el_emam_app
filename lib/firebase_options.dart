@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCl3pCtfQJsL07RmyVP7xxuyxDBNHdxZhw',
-    appId: '1:198002771083:android:e15a5d747094916372008e',
+    appId: '1:198002771083:android:368f0d400e3a2c8a72008e',
     messagingSenderId: '198002771083',
     projectId: 'shipped-963da',
     databaseURL: 'https://shipped-963da-default-rtdb.europe-west1.firebasedatabase.app',
@@ -60,12 +60,13 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDbiDR1CD6_3Rr7GEyCgqIKxwO9AjQt1ZQ',
-    appId: '1:198002771083:ios:34b73a9d0e117d3572008e',
+    appId: '1:198002771083:ios:4ca61ce031b23dcc72008e',
     messagingSenderId: '198002771083',
     projectId: 'shipped-963da',
     databaseURL: 'https://shipped-963da-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'shipped-963da.firebasestorage.app',
-    iosClientId: '198002771083-ect6uahlapd378tgeccr79nuufggrpkn.apps.googleusercontent.com',
-    iosBundleId: 'com.anmka.elemam',
+    iosClientId: '198002771083-k0ot0cpnt1j5r1i5jscg08oa5lrdfuis.apps.googleusercontent.com',
+    iosBundleId: 'com.anmka.elemamacademy',
   );
+
 }

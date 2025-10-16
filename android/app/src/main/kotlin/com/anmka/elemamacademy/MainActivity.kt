@@ -1,4 +1,4 @@
-package com.anmka.elemam
+package com.anmka.elemamacademy
 
 import io.flutter.embedding.android.FlutterActivity
 

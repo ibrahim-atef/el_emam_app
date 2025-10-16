@@ -30,6 +30,49 @@
             {
               "client_id": "198002771083-pvdms5oemnfiv82o5r7rjk17612sqicj.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "198002771083-ect6uahlapd378tgeccr79nuufggrpkn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.anmka.elemam"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:198002771083:android:368f0d400e3a2c8a72008e",
+        "android_client_info": {
+          "package_name": "com.anmka.elemamacademy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "198002771083-pvdms5oemnfiv82o5r7rjk17612sqicj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCl3pCtfQJsL07RmyVP7xxuyxDBNHdxZhw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "198002771083-pvdms5oemnfiv82o5r7rjk17612sqicj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "198002771083-ect6uahlapd378tgeccr79nuufggrpkn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.anmka.elemam"
+              }
             }
           ]
         }
